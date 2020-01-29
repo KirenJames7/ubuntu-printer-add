@@ -6,16 +6,17 @@
 # CONFIG - Only edit the below lines to setup the script
 # ===================================================================
 #
-# Domain controller settings
-COMPANY_NAME="Zone24x7"
-DOMAIN_NAME="zone24x7.lk"
-DC_SERVER="ldap://ZONEDC01.${DOMAIN_NAME}:389"
-PRINTER_SERVER="inf-printer-srv"
+# Company & Domain settings
+COMPANY_NAME="<Company-Name>"
+DOMAIN_NAME="<Company-Domain-Name>"
+DC_SERVER="ldap://<Company-Domian-Controller-Name>.${DOMAIN_NAME}:389"
+PRINTER_SERVER="<Company-Printer-Server-Name>"
 #
 # Printer list --note - edits should remain in order - use `lpinfo -m | grep "<Printer Name without PS|PCL6>"` to find ppd manually recomended
-printers=("Nawala Ground Printer" "Nawala First Printer" "Nawala Second Printer" "Nawala Third Printer" "Nawala Operations Printer" "Nawala Accounts Printer" "Nawala Accounts Printer 2" "Kotte Ground Printer" "Kotte First Printer")
-uris=("Printer%40Ground%24" "Printer%40First%24" "Printer%40Second%24" "Printer%40Third%24" "Printer%40Operations%24" "Printer%40Account%24" "Printer%40Accounts2%24" "Printer%40KotteGround%24" "Printer%40KotteFirst%24")
-ppds=("postscript-hp:0/ppd/hplip/HP/hp-laserjet_pro_m201_m202-ps.ppd" "postscript-hp:0/ppd/hplip/HP/hp-laserjet_pro_m402_m403-ps.ppd" "postscript-hp:0/ppd/hplip/HP/hp-laserjet_pro_m402_m403-ps.ppd" "postscript-hp:0/ppd/hplip/HP/hp-laserjet_pro_m201_m202-ps.ppd" "postscript-hp:0/ppd/hplip/HP/hp-color_laserjet_pro_m252-ps.ppd" "foomatic-db-compressed-ppds:0/ppd/foomatic-ppd/Toshiba-e-Studio_2500c-Postscript.ppd" "postscript-hp:0/ppd/hplip/HP/hp-laserjet_pro_m402_m403-ps.ppd" "foo2zjs:0/ppd/foo2zjs/HP-LaserJet_1022n.ppd" "postscript-hp:0/ppd/hplip/HP/hp-laserjet_pro_m201_m202-ps.ppd")
+# printers[] uris[] ppds[] should be in order
+printers=(<Company-Printer-Names-Array>)
+uris=(<Company-Printer-URI-Array>)
+ppds=(<Company-Printer-PPD-Array>)
 #
 # ANSI color codes
 COLOR_OFF='\033[0m'
@@ -105,7 +106,7 @@ function addPrinters {
 		case $choice in
 			$choice)
 				echo "${LIGHT_YELLOW}Installing ${printers[$((choice-1))]}..."
-				lpadmin -p "${printers[$((choice-1))]//[[:blank:]]/}" -v "smb://${currentuser}@${DOMAIN_NAME}:${password}@${PRINTER_SERVER}/${uris[$((choice-1))]}" -o auth-info-required=username,password -o printer-is-shared=false -o PageSize=A4 -m "${ppds[$((choice-1))]}" -L "${printers[$((choice-1))]// Printer/}" -E
+				lpadmin -p "${printers[$((choice-1))]}" -v "smb://${currentuser}@${DOMAIN_NAME}:${password}@${PRINTER_SERVER}/${uris[$((choice-1))]}" -o auth-info-required=username,password -o printer-is-shared=false -o PageSize=A4 -m "${ppds[$((choice-1))]}" -L "${printers[$((choice-1))]}" -E
 				;;
 		esac
 		echo "Done"
